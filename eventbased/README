@@ -1,0 +1,306 @@
+A pipeline of MATLAB functions to run Fieldtrip for EEG/MEG analysis
+
+-----------------------------------------------------------
+MAIN FUNCTIONS
+-----------------------------
+PREPROCESSING
+- SELDATA: get data from recordings and put them in subject directory
+- GCLEAN: use German's toolbox to clean the data
+- REDEF: redefine trials
+-----------------------------
+
+-----------------------------
+ANALYSIS
+- ERP_SUBJ: timelock-analysis for each subject
+- ERP_GRAND: timelock-analysis over subjects
+- ERPSOURCE_SUBJ: identify sources of ERP using LCMV for each subject
+- POW_SUBJ: power-analysis for each subject
+- POW_GRAND: power-analysis over subjects
+- POWSOURCE_SUBJ: identify sources of POW using DICS for each subject
+- POWSOURCE_GRAND: group-level analysis of POW source data
+- POWCORR_SUBJ: power-trial correlation for each subject
+- POWCORR_GRAND: power-trial correlation over subjects
+- SOURCE_SUBJ: create virtual electrode, to be used for connectivity analysis
+- R_GRAND: call R subfunctions
+-----------------------------
+-----------------------------------------------------------
+
+-----------------------------------------------------------
+SUBFUNCTIONS
+- GET_PEAK: get the peaks for the source analysis
+  ERPSOURCE_SUBJ, POWSOURCE_SUBJ,
+  
+- GET_ROI: get the regions of interest
+  SOURCE_SUBJ,
+
+- LOAD_DATA: load data, and optionally get bad channels
+  ERP_SUBJ, POW_SUBJ, POWCORR_SUBJ, ERPSOURCE_SUBJ, POWSOURCE_SUBJ, SOURCE_SUBJ,
+  
+- LOAD_HEADSHAPE: load vol, lead, sens
+  ERPSOURCE_SUBJ, POWSOURCE_SUBJ, 
+
+- LOAD_SUBJ: load single-subject data
+  ERP_GRAND, POW_GRAND, POWCORR_GRAND, SOURCE_SUBJ,
+  
+- LOAD_SOURCE: load source data from virtual electrode
+  ERP_SUBJ, POW_SUBJ, POWCORR_SUBJ,
+  
+- PREPARE_LEADCHAN: only use good channels in leadfield
+  ERPSOURCE_SUBJ, POWSOURCE_SUBJ, 
+  
+- PREPARE_FREQPEAK adjust frequency and time of interest for frequency data
+  POWSOURCE_SUBJ, 
+  
+- REALIGN_SOURCE: realign to MNI space or to freesurfer sphere
+  ERPSOURCE_SUBJ,
+  
+- REPORT_CLUSTER: report which clusters are significant
+  ERP_GRAND, POW_GRAND, POWCORR_GRAND,
+-----------------------------------------------------------
+
+-----------------------------------------------------------
+INFO
+.data: path of /data1/projects/PROJ/subjects/
+  SELDATA, GCLEAN, REDEF, LOAD_DATA, LOAD_HEADSHAPE,
+
+.dcon: directory with CONN data
+CONN_SUBJ, CONN_GRAND, 
+  
+.derp: directory with ERP data
+  ERP_SUBJ, ERPSOURCE_SUBJ, LOAD_SUBJ, GET_PEAK
+
+.dpow: directory with POW data
+  POW_SUBJ, POW_GRAND, POWCORR_SUBJ, POWCORR_GRAND, LOAD_SUBJ, GET_PEAK
+  
+.dsou: directory with SOURCE data
+  LOAD_SOURCE, SOURCE_SUBJ,
+
+.log: name of the file and directory to save log
+  SELDATA, GCLEAN, REDEF, ERP_SUBJ, ERP_GRAND, ERPSOURCE_SUBJ, POW_SUBJ, POW_GRAND, POWCORR_SUBJ, POWCORR_GRAND, CONN_SUBJ, CONN_GRAND, R_GRAND, 
+
+.mod: modality, MOD in /data1/projects/PROJ/subjects/SUBJ/MOD/NICK/
+  SELDATA, GCLEAN, REDEF, LOAD_DATA, 
+  
+.mri.template: template of the averaged MRI
+  POWSOURCE_GRAND, 
+
+.nick: NICK in /data1/projects/PROJ/subjects/SUBJ/MOD/NICK/
+  SELDATA, GCLEAN, REDEF, LOAD_DATA, 
+
+.qlog: directory with output of SGE
+  SELDATA, 
+
+.rec: REC in /data1/projects/PROJ/recordings/REC/
+  LOAD_DATA, LOAD_HEADSHAPE,
+
+.recs: path of /data1/projects/PROJ/recordings/REC/subjects/
+  SELDATA, 
+  
+.rslt: directory images are saved into
+  ERP_GRAND, POW_GRAND, POWCORR_GRAND, CONN_GRAND, 
+
+.sens.dist: distance between sensors to consider them neighbors (in the units of cfg.sens.file)
+  GCLEAN, REPORT_CLUSTER
+
+.sens.file: file with EEG sensors. It can be sfp or mat. It's included in data struct. If empty, it does not read the sensors.
+  SELDATA, GCLEAN,
+
+.sens.layout: file with layout. It should be a mat containing 'layout'. If empty, it does not plot topo.
+  ERP_GRAND, POW_GRAND, POWCORR_GRAND, CONN_GRAND, 
+  
+.vol.type: 'template' or subject-specific ('dipoli' or 'openmeeg')
+  LOAD_HEADSHAPE,
+
+.vol.template: file with template containing vol, lead, sens
+  LOAD_HEADSHAPE, 
+-----------------------------------------------------------
+  
+-----------------------------------------------------------
+CFG.OPT
+
+.avgfreq: how you want to average frequency bands
+  CONN_GRAND,
+
+.bad_samples.MADs = 5;
+  GCLEAN,
+
+.bad_channels.MADs = 8;
+  GCLEAN,
+
+.bad_samples.Percentile = [25 75];
+  GCLEAN,
+
+.bl: Baseline correction at the single-trial/single-subject level. If empty, no baseline. Otherwise:
+  POW_SUBJ, POW_GRAND,
+  
+.bl.baseline: two scalars with baseline windows
+  POW_SUBJ, POW_GRAND,
+  
+.bl.baselinetype: type of baseline ('relchange')
+  POW_SUBJ, POW_GRAND,
+
+.bline: one number in s, the center of the covariance window of the baseline (the window length depends on erp_peak/pow_peak). If empty, no baseline.  
+  ERPSOURCE_SUBJ, POWSOURCE_SUBJ
+  
+.clusterthr: threshold of the cluster
+  REPORT_CLUSTER,
+  
+.comp: comparisons to test (cell within cell, e.g. {{'cond1' 'cond2'} {'cond1'} {'cond2'}}), but you cannot have more than 2 conditions (it's always a t-test). If empty, not statistics and no plots.
+  ERP_GRAND, POW_GRAND, POWCORR_GRAND, POWSOURCE_GRAND, 
+
+.compstyle: 'logratio' or 'diff' (when comp contains two conditions, take log(x2/x1) or x2 - x1)
+  POW_GRAND, POW_GRP,
+  
+.cond: cell with conditions (e.g. {'*cond1' '*cond2'})
+  ERP_SUBJ, ERP_GRAND, ERPSOURCE_SUBJ, POW_SUBJ, POW_GRAND, POWCORR_GRAND, CONN_SUBJ, POWSOURCE_SUBJ,
+
+.conn.avgoverfreq: average power spectrum
+  CONN_SUBJ, 
+
+.conn.foi: frequency of interest
+  CONN_SUBJ, 
+
+.conn.foilim: two values for the frequency of interest
+  CONN_SUBJ, 
+
+.conn.freq: 'mtmconvol' or 'mtmfft'
+  CONN_SUBJ, 
+
+.conn.method: (if .conn.type == 'cca') 'gc'; (if .conn.type == 'ft') 'coh', 'csd', 'plv', 'powcorr', 'amplcorr', 'ppc', 'psi' (symmetric) or 'granger', 'dtf', 'pdc' (asymmetric)
+  CONN_SUBJ, CONN_GRAND, 
+
+.conn.mvar: logical, estimate coefficients or not
+  CONN_SUBJ, 
+
+.conn.order: scalar indicating model order
+  CONN_SUBJ, 
+
+.conn.planar for MEG if you want to run planar (but does it make sense to do planar on fourier data?)
+  CONN_SUBJ, 
+
+.conn.toi: vector with time points to run connectivity on
+  CONN_SUBJ, CONN_GRAND, 
+
+.conn.toolbox: 'biosig' or 'bsmart' or 'statespace'
+  CONN_SUBJ, 
+
+.conn.type: 'cca' or 'ft'
+  CONN_SUBJ, 
+
+.conn.t_ftimwin: scalar with duration of time window
+  CONN_SUBJ, 
+ 
+.csd.method: method to do scalp current density ('finite' or 'spline' or 'hjorth')
+  REDEF,
+
+.eog.correction = 50;
+  GCLEAN,
+
+.emg.correction = 30;
+  GCLEAN,
+
+.erp: a structure with cfg to pass to ft_timelockanalysis
+  ERP_SUBJ, ERPSOURCE_SUBJ,
+
+.event2trl: function name in NICK_private which creates the correct trl based on events
+  REDEF,
+
+.fsample: manually specify the frequency (very easily bug-prone, but in this way it does not read "data" all the time)
+  GCLEAN,
+
+.keepfilter: keep filters or not, keep them only if you plan to use erpstat or conn analyses (logical)
+  ERPSOURCE_SUBJ,  
+  
+.label: if not empty, labels of electrodes to rename (same length as seldata.selchan) 
+  SELDATA, SOURCE_SUBJ, 
+  
+.lcmv: options that will be passed to beamformer.
+  ERPSOURCE_SUBJ, 
+
+.lpfreqn = [.3 / (cfg.gclean.fsample/2)]; % normalized by half of the sampling frequency!
+  GCLEAN,
+  
+.mont.chan: a struct with .name ('name of group elec') and .chan (cell with electrode labels for each group)
+  SOURCE_SUBJ,
+  
+.mont.type: type of montage to compute source activity
+  SOURCE_SUBJ,
+
+.numrandomization: number of randomization
+  REPORT_CLUSTER, 
+  
+.peak: peaks of interest (see GET_PEAK)
+  GET_PEAK, ERPSOURCE_SUBJ
+  
+.plot.bline: two scalars indicating the time window for baseline in s (only for plotting, TODO: check if necessary for normal analysis as well)
+  ERP_GRAND,
+  
+.plot.chan(1).name: 'name_of_channels'
+  ERP_GRAND, POW_GRAND, POWCORR_GRAND, 
+
+.plot.chan(1).chan: cell with labels of channels of interest
+  ERP_GRAND, POW_GRAND, POWCORR_GRAND, 
+  
+.plot.freq(1).name: 'name_of_frequency'
+  POW_GRAND, POWCORR_GRAND, 
+
+.plot.freq(1).freq: two scalars with the frequency limits
+  POW_GRAND, POWCORR_GRAND, 
+  
+.planar: planar transformation, MEG-only (logical)
+  POW_SUBJ,
+
+.pow: a structure with cfg to pass to ft_freqanalysis
+  POW_SUBJ, POWCORR_SUBJ, 
+  
+.powcorr: column of trialinfo to use for the correlation
+  POWCORR_SUBJ,
+
+.powlog: logical (take the log of power, strongly advised)
+  POWCORR_SUBJ, 
+
+.preproc1: struct to pass to ft_preprocessing before cutting trials (if empty, no preprocessing)
+  REDEF,
+
+.preproc2: struct to pass to ft_preprocessing after cutting trials (if empty, no preprocessing)
+  REDEF,
+
+.pwl.pca: if not empty, number of PC to work with in JADE
+  GCLEAN,
+
+.rcnd: specific name of the condition of interest in the raw recording folder
+  SELDATA, 
+  
+.rdir: directory with R functions
+  R_GRAND, 
+  
+.redef: options to pass to event2trl 
+  REDEF, 
+
+.rfun(1).args{1}: arguments for R function
+  R_GRAND, 
+
+.rfun(1).name: name of the R function
+  R_GRAND, 
+
+.rfun(1).tolog: do you want the output into the log file? (logical)
+  R_GRAND, 
+
+.selchan: channels to read. It can be a vector or a cell of strings with the elec names on file (Micromed elec names are '  1' '  2'  '  3') 
+  SELDATA, 
+
+.source: read virtual electrode data (logical)
+  ERP_SUBJ, POW_SUBJ, CONN_SUBJ,
+
+.stat.time: latency of interest (two scalar)
+  REPORT_CLUSTER,
+
+.stat.freq: frequency of interest (two scalar)
+  REPORT_CLUSTER,
+  
+.trialfun: name of the trialfun used to read the data, see below. The function should be in NICK_private/ 
+  SELDATA, 
+-----------------------------------------------------------
+
+ 
+ 
