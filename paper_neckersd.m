@@ -38,6 +38,8 @@ for i = 1:numel(allsubj)
   mkdir(data_dir)
   eeg_dir = [data_dir 'eeg' filesep];
   mkdir(eeg_dir)
+  eeg_dir = [data_dir 'neckersd' filesep];
+  mkdir(eeg_dir)
   
   copyfile([info.recs allsubj(i).name filesep 'eeg' filesep 'raw' filesep '*.mat'], ...
            eeg_dir)

@@ -14,7 +14,7 @@ info = info_neckersd;
 
 %-----------------%
 %-subjects index and step index
-info.subjall = 1;
+info.subjall = 1:8;
 info.run = [3];
 
 info.nooge = [3:17];
