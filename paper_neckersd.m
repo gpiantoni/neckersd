@@ -30,6 +30,22 @@ chan = {'E25' 'E26' 'E27' 'E28' 'E40' 'E41' 'E42' 'E43' 'E44' 'E53' 'E54' 'E55' 
 %-------------------------------------%
 
 %-------------------------------------%
+%-copy data in subjects dir if not present yet
+info = info_neckersd;
+allsubj = dir([info.recs '00*']);
+for i = 1:numel(allsubj)
+  data_dir = [info.data allsubj(i).name filesep];
+  mkdir(data_dir)
+  eeg_dir = [data_dir 'eeg' filesep];
+  mkdir(eeg_dir)
+  
+  copyfile([info.recs allsubj(i).name filesep 'eeg' filesep 'raw' filesep '*.mat'], ...
+           eeg_dir)
+  fileattrib([eeg_dir '*.mat'], '+w', 'u')
+end
+%-------------------------------------%
+
+%-------------------------------------%
 %-run on normal sleep
 cfgin.run = 3:13;
 cfgin.chan = chan;
