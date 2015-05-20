@@ -98,7 +98,7 @@ for k = 1:numel(opt.cond)
   tmpcfg.grid.filter  = sou.avg.filter;
   tmpcfg.rawtrial = 'yes';
   soucorr = ft_sourceanalysis(tmpcfg, freq);
-  pow = [soucorr.trial.pow]';
+  pow = cat(1, soucorr.trial.pow);
   %---------------------------%
 
   %---------------------------%
