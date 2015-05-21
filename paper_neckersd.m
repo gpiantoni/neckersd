@@ -1,4 +1,4 @@
-% function paper_neckersd
+function paper_neckersd
 
 %-----------------------------------------------%
 %-MANUSCRIPT------------------------------------%

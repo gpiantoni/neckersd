@@ -23,6 +23,18 @@ ftpath = [tbox_dir 'fieldtrip/']; % fieldtrip (git)
 spmpath = [tbox_dir 'spm8/'];
 
 %-------------------------------------%
+%-MAIN SCRIPT 
+%-----------------%
+%-get git version
+try % so many thing can go wrong here
+  [~, tver] = system(['git --git-dir=' info.scrp '.git log |  awk ''NR==1'' | awk ''{print $2}''']);
+catch ME
+  tver = ME.message;
+end
+output = sprintf('%s:\t%s', 'MAIN SCRIPT', tver);
+%-------------------------------------%
+
+%-------------------------------------%
 %-FIELDTRIP (always necessary)
 %-----------------%
 %-addpath
@@ -40,7 +52,8 @@ try % so many thing can go wrong here
 catch ME
   ftver = ME.message;
 end
-output = sprintf('fieldtrip:\t%s', ftver);
+outtmp = sprintf('fieldtrip:\t%s', ftver);
+output = [output outtmp];
 %-----------------%
 %-------------------------------------%
 
@@ -88,17 +101,6 @@ for i = 1:numel(toolbox)
   
   tpath = [info.scrp toolbox{i} filesep];
   addpath(genpath(tpath)) % with subdirectories
-  
-  %-----------------%
-  %-get git version
-  try % so many thing can go wrong here
-    [~, tver] = system(['git --git-dir=' tpath '.git log |  awk ''NR==1'' | awk ''{print $2}''']);
-  catch ME
-    tver = ME.message;
-  end
-  outtmp = sprintf('%s:\t%s', toolbox{i}, tver);
-  output = [output outtmp];
-  %-----------------%
   
   %-----------------%
   %-add SPM if using detectsleep
