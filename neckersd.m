@@ -15,7 +15,7 @@ info = info_neckersd;
 %-----------------%
 %-subjects index and step index
 info.subjall = 1:8;
-info.run = [3];
+info.run = cfgin.run;
 
 info.nooge = [3:17];
 info.sendemail = false;
@@ -27,9 +27,9 @@ info.sendemail = false;
 %-------------------------------------%
 %---------------------------%
 %-common
-cfgin.alphafreq = [7 11];
+% cfgin.alphafreq = [7 11];
 % cfgin.chan = {'E25' 'E26' 'E27' 'E28' 'E40' 'E41' 'E42' 'E43' 'E44'};
-cfgin.chan = {'E25' 'E26' 'E27' 'E28' 'E40' 'E41' 'E42' 'E43' 'E44' 'E53' 'E54' 'E55' 'E56' 'E57'};
+% cfgin.chan = {'E25' 'E26' 'E27' 'E28' 'E40' 'E41' 'E42' 'E43' 'E44' 'E53' 'E54' 'E55' 'E56' 'E57'};
 % cfgin.chan = {'E13' 'E25' 'E26' 'E27' 'E28' 'E40' 'E41' 'E42' 'E43' 'E44' 'E53' 'E54' 'E55' 'E56' 'E57'};
 % chan = {'E12' 'E13' 'E14' 'E25' 'E26' 'E27' 'E28' 'E40' 'E41' 'E42' 'E43' 'E44' 'E53' 'E54' 'E55' 'E56' 'E57'};
 chan = cfgin.chan;

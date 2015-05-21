@@ -38,7 +38,7 @@ for i = 1:numel(allsubj)
   mkdir(data_dir)
   eeg_dir = [data_dir 'eeg' filesep];
   mkdir(eeg_dir)
-  eeg_dir = [data_dir 'neckersd' filesep];
+  eeg_dir = [eeg_dir 'neckersd' filesep];
   mkdir(eeg_dir)
   
   copyfile([info.recs allsubj(i).name filesep 'eeg' filesep 'raw' filesep '*.mat'], ...
@@ -49,7 +49,7 @@ end
 
 %-------------------------------------%
 %-run on normal sleep
-cfgin.run = 3:13;
+cfgin.run = 3:17;
 cfgin.chan = chan;
 cfgin.alphafreq = alpha_ns;
 neckersd(cfgin)
@@ -154,9 +154,9 @@ n = decay(4, :);
 
 %---------------------------%
 %-make figure
+max_dist = -25;
 x = all_dist(all_dist >= max_dist);
 y = m(all_dist >= max_dist);
-max_dist = -25;
 h = figure('vis', 'on');
 hold on
 plot(x, y, '.-')
@@ -230,7 +230,7 @@ tmpcfg.projmethod = 'nearest';
 % tmpcfg.projmethod = 'sphere_avg';
 tmpcfg.sphereradius = 5;
 
-tmpcfg.surffile = [base_dir 'toolbox/fieldtrip/template/anatomy/surface_wm_left.mat'];
+tmpcfg.surffile = [base_dir 'toolbox/fieldtrip/template/anatomy/surface_white_left.mat'];
 tmpcfg.surfdownsample = 10;
 ft_sourceplot(tmpcfg, souint);
 
@@ -245,7 +245,7 @@ print(gcf, [filename '_lh_right'], format, res)
 delete(gcf)
 
 figure
-tmpcfg.surffile = [base_dir 'toolbox/fieldtrip/template/anatomy/surface_wm_right.mat'];
+tmpcfg.surffile = [base_dir 'toolbox/fieldtrip/template/anatomy/surface_white_right.mat'];
 ft_sourceplot(tmpcfg, souint);
 
 view(-60, 10)
