@@ -108,7 +108,8 @@ if ~isempty(cfg.sens.file)
   
   %-------%
   %-create neighbors from file
-  sens = ft_read_sens(cfg.sens.file);
+  imported = load(cfg.sens.file, 'elec');
+  sens = imported.elec;
   sens.label = upper(sens.label);
   
   tmpcfg = [];

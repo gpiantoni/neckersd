@@ -61,7 +61,8 @@ allfile = dir([ddir '*_A_B.mat']); % files matching a preprocessing
 %-------%
 %-for CSD
 if isfield(info.sens, 'file') && ~isempty(info.sens.file)
-  sens = ft_read_sens(info.sens.file);
+  imported = load(info.sens.file, 'elec');
+  sens = imported.elec;
   sens.label = upper(sens.label);
 end
 %-------%

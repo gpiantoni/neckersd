@@ -30,6 +30,8 @@ info.mod  = 'eeg';
 [~, host] = system('hostname');
 if strcmp(host(end-12:end-1), 'partners.org')
   info.home = '/PHShome/gp902/';
+elseif strcmp(host(end-7:end-1), 'knaw.nl')
+  info.home = '/home/piantoni/';
 else
   info.home = '/data1/';
 end
@@ -55,16 +57,16 @@ info.dcor = [info.anly 'corr/'];
 %-------------------------------------%
 %-----------------%
 %-elec info
-info.sens.file = [info.home 'toolbox/elecloc/easycap_61_FT.mat']; % it uses 'elec' with 'E1' electrode names
+info.sens.file = [info.scrp 'mri2lead/easycap_61_FT.mat']; % it uses 'elec' with 'E1' electrode names
 info.sens.dist = 50; % same units as channel location
-info.sens.layout = [info.home 'toolbox/elecloc/easycap_61_FT.mat'];
+info.sens.layout = [info.scrp 'mri2lead/easycap_61_FT.mat'];
 %-----------------%
 
 %-----------------%
 %-source info
 info.vol.type = 'template'; % 'template' or 'dipoli' ('dipoli' 'bemcp' 'openmeeg' and the rest use subject-specific MRI)
 if strcmp(info.vol.type, 'template')
-  info.vol.template = [info.anly 'smri/vigd_volleadsens_spmtemplate_dipoli.mat'];
+  info.vol.template = [info.scrp 'mri2lead/vigd_volleadsens_spmtemplate_dipoli.mat'];
 else
   info.vol.mod = 'smri';
   info.vol.cond = 't1';

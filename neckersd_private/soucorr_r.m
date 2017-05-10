@@ -41,7 +41,7 @@ source.pow(C{1}) = C{2};
 
 %---------------------------%
 %-interpolate
-mri = ft_read_mri([info.anly 'smri/neckersd_vigd_avg_smri_t1_spm.nii.gz']);
+mri = ft_read_mri([info.scrp 'mri2lead/neckersd_vigd_avg_smri_t1_spm.nii.gz']);
 tmpcfg = [];
 tmpcfg.parameter = {'pow'};
 source = ft_sourceinterpolate(tmpcfg, source, mri);

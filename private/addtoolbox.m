@@ -15,6 +15,8 @@ function output = addtoolbox(info)
 [~, host] = system('hostname');
 if strcmp(host(end-12:end-1), 'partners.org')
   tbox_dir = '/PHShome/gp902/toolbox/';
+elseif strcmp(host(end-7:end-1), 'knaw.nl')
+  tbox_dir = '/home/piantoni/tools/';
 else
   tbox_dir = '/data1/toolbox/';
 end
