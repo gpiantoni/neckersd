@@ -7,6 +7,7 @@ function paper_neckersd
 %-------------------------------------%
 %-directories
 base_dir = '/PHShome/gp902/';
+base_dir = '/home/piantoni/';
 
 anly = [base_dir 'projects/neckersd/analysis/'];
 dpow = [anly 'pow/'];
@@ -21,7 +22,7 @@ mkdir(pdir)
 %-------------------------------------%
 %-default values
 ext = '.pdf';
-load([base_dir 'toolbox/elecloc/easycap_61_FT.mat'])
+load(['mri2lead/easycap_61_FT.mat'])
 alpha_ns = [7 11];
 alpha_sd = [5 11];
 plot_freq = [0 30];
@@ -99,7 +100,12 @@ cfg.highlight = 'on';
 cfg.highlightchannel = chan;
 cfg.highlightsymbol = '.';
 
+cfg.marker = 'off';
+cfg.highlight = 'off';
+
 ft_topoplotER(cfg, pow);
+colormap('autumn')
+
 saveas(h, [pdir 'neckersd_powns_B' ext])
 delete(h)
 %---------------------------%
@@ -115,6 +121,7 @@ cfg.ylim = plot_freq;
 cfg.zlim = [0 1] * 900;
 ft_singleplotTFR(cfg, pow);
 set(gca, 'xtick', [], 'ytick', [])
+colormap('autumn')
 title('')
 colorbar off
 saveas(h, [pdir 'neckersd_powns_C' '.tiff'])

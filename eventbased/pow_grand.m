@@ -165,6 +165,10 @@ if isfield(opt, 'comp')
       if isfield(opt, 'bl') && ~isempty(opt.bl)
         for i = 1:numel(data)
           cfg = [];
+          cfg.frequency = [5 25];
+          data{i} = ft_selectdata(cfg, data{i});
+          
+          cfg = [];
           cfg.baseline = opt.bl.baseline;
           cfg.baselinetype = opt.bl.baselinetype;
           data{i} = ft_freqbaseline(cfg, data{i});
